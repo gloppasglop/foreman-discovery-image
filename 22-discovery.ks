@@ -65,7 +65,7 @@ cat >/etc/foreman-proxy/settings.yml <<'CFG'
 :ssl_private_key: /etc/foreman-proxy/key.pem
 
 :daemon: true
-:https_port: 8443
+:http_port: 8443
 :https_port: 9090
 
 # SYSLOG cannot be used, see: http://projects.theforeman.org/issues/11623
