@@ -1,0 +1,11 @@
+[Unit]
+Description=Start Kexec
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/bin/true
+ExecStop=/usr/bin/discovery-kexec
+
+[Install]
+WantedBy=multi-user.target

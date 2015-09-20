@@ -47,7 +47,7 @@ echo " * disabling some unused system services"
 systemctl disable ipmi.service
 
 echo " * open foreman-proxy port via firewalld"
-firewall-offline-cmd --zone=public --add-port=8443/tcp --add-port=8448/tcp
+firewall-offline-cmd --zone=public --add-port=8443/tcp
 
 echo " * setting up foreman proxy"
 sed -i '/\[Service\]/a EnvironmentFile=-/etc/default/discovery' /usr/lib/systemd/system/foreman-proxy.service
@@ -65,8 +65,8 @@ cat >/etc/foreman-proxy/settings.yml <<'CFG'
 :ssl_private_key: /etc/foreman-proxy/key.pem
 
 :daemon: true
-:http_port: 8448
 :https_port: 8443
+:https_port: 9090
 
 # SYSLOG cannot be used, see: http://projects.theforeman.org/issues/11623
 # :log_file: SYSLOG
