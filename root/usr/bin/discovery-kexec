@@ -1,0 +1,32 @@
+#!/bin/bash
+
+
+kexec_file=$(mktemp)
+curl -k https://satellite.localdomain/unattended/iPXE > $kexec_file
+
+
+kernel=$(cat $kexec_file | grep '^kernel ' | cut -f 2 -d ' ')
+initrd=$(cat $kexec_file | grep '^initrd ' | cut -f 2 -d ' ')
+ks=$(cat $kexec_file | grep '^ks ' | cut -f 2 -d ' ')
+
+logger -p user.info "Kernel URL: $kernel"
+logger -p user.info "Initrd URL: $initrd"
+logger -p user.info "Kickstart URL: $ks"
+
+wget -O /tmp/vmlinuz $kernel
+
+if [[ $? -ne 0 ]]; then
+    logger -p user.crit "Cannot download kernel"
+    exit 1
+fi
+
+wget -O /tmp/initrd.img  $initrd
+
+if [[ $? -ne 0 ]]; then
+    logger -p user.crit "Cannot download initrd"
+    exit 1
+fi
+
+kexec -l --initrd /tmp/initrd.img --command-line ks="$ks" /tmp/vmlinuz && kexec -e
+
+logger -p user.crit "Error kexec"
