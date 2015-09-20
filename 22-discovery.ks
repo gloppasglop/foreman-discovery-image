@@ -38,6 +38,7 @@ systemctl enable ipmi.service
 systemctl enable foreman-proxy.service
 systemctl enable discovery-fetch-extensions.path
 systemctl enable discovery-menu.service
+systemctl enable discovery-kexec.service
 
 # register service is started manually from discovery-menu
 systemctl disable discovery-register.service
@@ -88,23 +89,6 @@ cat >/etc/foreman-proxy/settings.d/bmc.yml <<'CFG'
 :enabled: true
 :bmc_default_provider: shell
 CFG
-
-cat >/etc/systemd/system/discovery-kexec.service <<'CFG'
-[Unit]
-Description=Start Kexe
-
-[Service]
-Type=oneshot
-RemainAfterExit=true
-ExecStart=/bin/true
-ExecStop=/usr/bin/discovery-kexec
-
-[Install]
-WantedBy=multi-user.target
-CFG
-
-systemctl enable discovery-kexec.service
-
 
 echo " * setting up systemd"
 echo "DefaultTimeoutStartSec=30s" >> /etc/systemd/system.conf
