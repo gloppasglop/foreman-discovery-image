@@ -89,6 +89,23 @@ cat >/etc/foreman-proxy/settings.d/bmc.yml <<'CFG'
 :bmc_default_provider: shell
 CFG
 
+cat >/etc/systemd/system/discovery-kexec.service <<'CFG'
+[Unit]
+Description=Start Kexe
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/bin/true
+ExecStop=/usr/bin/discovery-kexec
+
+[Install]
+WantedBy=multi-user.target
+CFG
+
+systemctl enable discovery-kexec.service
+
+
 echo " * setting up systemd"
 echo "DefaultTimeoutStartSec=30s" >> /etc/systemd/system.conf
 echo "DefaultTimeoutStopSec=5s" >> /etc/systemd/system.conf
