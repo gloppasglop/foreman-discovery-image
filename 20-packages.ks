@@ -67,7 +67,7 @@ binutils
 -wireless-tools
 
 # Remove the kbd bits
--kbd
+kbd
 -usermode
 
 # file system stuff
