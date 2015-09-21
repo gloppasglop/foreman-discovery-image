@@ -2,7 +2,22 @@
 
 
 kexec_file=$(mktemp)
-curl -k https://satellite.localdomain/unattended/iPXE > $kexec_file
+
+discovery_success="/tmp/discovery-http-success"
+
+if [[ ! -f "$discovery_success" ]]; then
+	logger -p user.crit "Discovery not sucessfull. $discovery_success does not exist"
+	exit 1
+fi
+
+proxy=$(grep "^URI:" $discovery_success | cut -f 2 -d " ")
+
+if [[ -z "$proxy" ]]; then
+	logger -p user.crit "Proxy not set"
+	exit 1
+fi
+
+curl -k $proxy/unattended/iPXE > $kexec_file
 
 
 kernel=$(cat $kexec_file | grep '^kernel ' | cut -f 2 -d ' ')

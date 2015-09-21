@@ -92,8 +92,9 @@ def proxy_type
   type
 end
 
-def write_tui result = 'success', code, body
+def write_tui result = 'success', uri, code, body
   File.open("/tmp/discovery-http-#{result}", 'w') do |file|
+    file.write("URI: #{uri}\n")
     file.write("#{code}: #{body}")
   end
 end
@@ -126,19 +127,19 @@ def upload(uri = discover_server, type = proxy_type, custom_facts = {})
   if ['200','201'].include? response.code
     log_msg "Response from Foreman #{response.code}: #{response.body}"
     body = response.nil? ? 'N/A' : response.body
-    write_tui 'success', response.code, body
+    write_tui 'success', uri, response.code, body
     return true
   else
     log_err "Response from Foreman #{response.code}: #{response.body}"
     body = response.nil? ? 'N/A' : response.body
-    write_tui 'failure', response.code, body
+    write_tui 'failure', uri, response.code, body
     return false
   end
 rescue => e
   log_err "Could not send facts to Foreman: #{e}"
   log_debug e.backtrace.join("\n")
   body = response.nil? ? 'N/A' : response.body
-  write_tui 'failure', 1001, "#{e}, body: #{body}"
+  write_tui 'failure', uri, 1001, "#{e}, body: #{body}"
   return false
 end
 
