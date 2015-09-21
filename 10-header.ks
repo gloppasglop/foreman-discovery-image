@@ -2,7 +2,7 @@
 # dc1d03989120e00d50fb8b3f88cb1b99473e5c66
 
 lang en_US.UTF-8
-keyboard fr_CH
+keyboard --vckeymap=ch-fr --xlayouts='ch (fr)'
 timezone --utc Etc/UTC
 auth --useshadow --enablemd5
 selinux --permissive
