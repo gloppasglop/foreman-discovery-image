@@ -17,6 +17,7 @@ if [[ -z "$proxy" ]]; then
 	exit 1
 fi
 
+sleep 5
 curl -k $proxy/unattended/iPXE > $kexec_file
 
 

@@ -12,11 +12,7 @@ def screen_foreman mac = nil, gw = nil, proxy_url = cmdline('proxy.url'), proxy_
   r_proxy = Newt::RadioButton.new(32, 10, "Proxy", 1, r_server)
   b_ok = Newt::Button.new(34, 15, "Next")
   b_cancel = Newt::Button.new(46, 15, "Cancel")
-  if gw.nil?
-    proxy_url ||= ''
-  else
-    proxy_url ||= "https://#{gw}"
-  end
+  proxy_url ||= discover_server.to_s
   proxy_type ||= 'foreman'
   t_url.set(proxy_url, 1)
   r_server.set(proxy_type != 'proxy' ? '*' : ' ')
@@ -39,15 +35,16 @@ def screen_foreman mac = nil, gw = nil, proxy_url = cmdline('proxy.url'), proxy_
       Newt::Screen.win_message("Invalid URL", "OK", "Not a valid Foreman URL: #{url} (#{e})")
       return [:screen_foreman, mac, gw, url, proxy_type]
     end
-    if dhcp
-      if perform_upload(proxy_url, proxy_type, new_custom_facts(mac))
-        [:screen_status, generate_info(' - awaiting kexec into installer')]
-      else
-        :screen_welcome
-      end
-    else
-      [:screen_facts, mac, proxy_url, proxy_type]
-    end
+    [:screen_facts, mac, proxy_url, proxy_type]
+    # if dhcp
+    #   if perform_upload(proxy_url, proxy_type, new_custom_facts(mac))
+    #     [:screen_status, generate_info(' - awaiting kexec into installer')]
+    #   else
+    #     :screen_welcome
+    #   end
+    # else
+    #   [:screen_facts, mac, proxy_url, proxy_type]
+    # end
   else
     :screen_welcome
   end
