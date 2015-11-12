@@ -51,11 +51,12 @@ def screen_primary_iface dhcp = false
       configure_network false, primary_mac
       [:screen_foreman, primary_mac, nil, cmdline('proxy.url'), cmdline('proxy.type'), true]
     else
-      detect_ip, detect_gw, detect_dns = detect_ipv4_credentials('primary')
+      detect_ip, detect_gw, detect_dns, detect_domain = detect_ipv4_credentials('primary')
       [:screen_network, primary_mac,
        cmdline('fdi.pxip') || detect_ip,
        cmdline('fdi.pxgw') || detect_gw,
-       cmdline('fdi.pxdns') || detect_dns]
+       cmdline('fdi.pxdns') || detect_dns,
+       cmdline('fdi.pxdomain') || detect_domain]
     end
   elsif answer == b_cancel
     :screen_welcome

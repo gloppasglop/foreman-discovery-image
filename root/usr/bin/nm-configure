@@ -14,7 +14,7 @@ correct_owner_perms() {
 usage() {
   echo "Usage: "
   echo " $0 primary [MAC_ADDRESS]"
-  echo " $0 primary-static MAC_ADDRESS IP4_ADDR/CIDR IP4_GW IP4_DNS"
+  echo " $0 primary-static MAC_ADDRESS IP4_ADDR/CIDR IP4_GW IP4_DNS IP4_DOMAIN"
   echo " $0 secondary MAC_ADDRESS AUTOCONNECT (true/false)"
 }
 
@@ -24,6 +24,7 @@ if [[ "$1" == "primary-static" ]]; then
   ip=$3
   gw=$4
   dns=$5
+  domain=$6
   script=/etc/NetworkManager/system-connections/primary
   cat > $script <<EONS
 [connection]
@@ -39,6 +40,7 @@ method=manual
 address1=$ip
 gateway=$gw
 dns=$dns;
+dns-search=$domain;
 [ipv6]
 method=ignore
 EONS

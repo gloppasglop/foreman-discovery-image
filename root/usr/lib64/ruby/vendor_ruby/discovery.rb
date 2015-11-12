@@ -154,11 +154,11 @@ end
 
 def detect_ipv4_credentials(interface)
   res = {}
-  str = `nmcli -t -f IP4.ADDRESS,IP4.GATEWAY,IP4.DNS con show #{interface}`
-  return ["", "", ""] if $? != 0
+  str = `nmcli -t -f IP4.ADDRESS,IP4.GATEWAY,IP4.DNS,IP4.DOMAIN con show #{interface}`
+  return ["", "", "", ""] if $? != 0
   str.each_line { |x| kv = x.split(':'); res[kv[0]] = kv[1].chomp }
-  [res["IP4.ADDRESS[1]"] || '', res["IP4.GATEWAY"] || '', res["IP4.DNS[1]"] || '']
+  [res["IP4.ADDRESS[1]"] || '', res["IP4.GATEWAY"] || '', res["IP4.DNS[1]"] || '', res["IP4.DOMAIN[1]"] || 'ebu.ch' ]
 rescue => e
   log_err e.message
-  ["", "", ""]
+  ["", "", "", ""]
 end

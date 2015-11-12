@@ -73,10 +73,10 @@ def start_discovery_service
   end
 end
 
-def configure_network static, mac, ip=nil, gw=nil, dns=nil
+def configure_network static, mac, ip=nil, gw=nil, dns=nil, domain=nil
   command("systemctl stop foreman-proxy")
   if static
-    command("nm-configure primary-static '#{mac}' '#{ip}' '#{gw}' '#{dns}'")
+    command("nm-configure primary-static '#{mac}' '#{ip}' '#{gw}' '#{dns}' '#{domain}'")
   else
     command("nm-configure primary '#{mac}'")
   end
@@ -131,7 +131,8 @@ def main_loop
     ip = cmdline('fdi.pxip')
     gw = cmdline('fdi.pxgw')
     dns = cmdline('fdi.pxdns')
-    configure_network true, mac, ip, gw, dns
+    domain = cmdline('fdi.pxdomain')
+    configure_network true, mac, ip, gw, dns, domain
     proxy_url = cmdline('proxy.url')
     proxy_url = cmdline('proxy.type')
     facts = new_custom_facts(mac)
