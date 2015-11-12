@@ -4,15 +4,29 @@ def screen_facts mac, proxy_url, proxy_type
   b_confirm = Newt::Button.new(-1, -1, "Confim")
   b_cancel = Newt::Button.new(-1, -1, "Cancel")
 
-  top_grid = Newt::Grid.new(1, 2)
-  facts_grid = Newt::Grid.new(4, 9)
+  top_grid = Newt::Grid.new(1, 3)
+  ebu_grid = Newt::Grid.new(2, 3)
+  facts_grid = Newt::Grid.new(4, 3)
   but_grid = Newt::Grid.new(2, 1)
 
   but_grid.set_field(0, 0, Newt::GRID_COMPONENT, b_confirm, 0, 0, 2, 0, 0, 0)
   but_grid.set_field(1, 0, Newt::GRID_COMPONENT, b_cancel, 0, 0, 2, 0, 0, 0)
 
+  label_ebu_environment = Newt::Label.new(-1, -1, "Environment ")
+  ebu_environment = Newt::Entry.new(-1, -1, cmdline("fdi.pxfactebu_environment").to_s, 35, Newt::FLAG_SCROLL)
+  label_ebu_rhel_version = Newt::Label.new(-1, -1, "RHEL Version ")
+  ebu_rhel_version = Newt::Entry.new(-1, -1, cmdline("fdi.pxfactebu_rhel_version").to_s, 35, Newt::FLAG_SCROLL)
+  label_ebu_hostname = Newt::Label.new(-1, -1, "Hostname ")
+  ebu_hostname = Newt::Entry.new(-1, -1, cmdline("fdi.pxfactebu_hostname").to_s, 37, Newt::FLAG_SCROLL)
+  ebu_grid.set_field(0, 0, Newt::GRID_COMPONENT, label_ebu_environment, 0, 0, 0, 0, 0, 0)
+  ebu_grid.set_field(1, 0, Newt::GRID_COMPONENT, ebu_environment, 0, 0, 0, 0, 0, 0)
+  ebu_grid.set_field(0, 1, Newt::GRID_COMPONENT, label_ebu_rhel_version, 0, 0, 0, 0, 0, 0)
+  ebu_grid.set_field(1, 1, Newt::GRID_COMPONENT, ebu_rhel_version, 0, 0, 0, 0, 0, 0)
+  ebu_grid.set_field(0, 2, Newt::GRID_COMPONENT, label_ebu_hostname, 0, 0, 0, 0, 0, 0)
+  ebu_grid.set_field(1, 2, Newt::GRID_COMPONENT, ebu_hostname, 0, 0, 0, 0, 0, 0)
+
   names = []; values = []; labels = []; labels_sep = []
-  (0..8).each_with_index do |ix, _|
+  (0..2).each_with_index do |ix, _|
     labels[ix] = Newt::Label.new(-1, -1, "Fact \##{ix + 1} name ")
     labels_sep[ix] = Newt::Label.new(-1, -1, " value ")
     names[ix] = Newt::Entry.new(-1, -1, cmdline("fdi.pxfactname#{ix + 1}").to_s, 15, Newt::FLAG_SCROLL)
@@ -23,16 +37,22 @@ def screen_facts mac, proxy_url, proxy_type
     facts_grid.set_field(3, ix, Newt::GRID_COMPONENT, values[ix], 0, 0, 0, 0, 0, 0)
   end
 
-  top_grid.set_field(0, 0, Newt::GRID_SUBGRID, facts_grid, 0, 0, 0, 0, 0, 0)
-  top_grid.set_field(0, 1, Newt::GRID_SUBGRID, but_grid, 0, 2, 0, 0, 0, 0)
+  top_grid.set_field(0, 0, Newt::GRID_SUBGRID, ebu_grid, 0, 0, 0, 0, 0, 0)
+  top_grid.set_field(0, 1, Newt::GRID_SUBGRID, facts_grid, 0, 0, 0, 0, 0, 0)
+  top_grid.set_field(0, 2, Newt::GRID_SUBGRID, but_grid, 0, 2, 0, 0, 0, 0)
 
-  top_grid.wrapped_window("Custom facts")
+  top_grid.wrapped_window("Facts")
 
   f = Newt::Form.new
   if cmdline("fdi.pxfactname1")
     f.add(b_confirm, b_cancel)
   end
-  (0..8).each_with_index do |ix, _|
+
+  f.add(label_ebu_environment, ebu_environment)
+  f.add(label_ebu_rhel_version, ebu_rhel_version)
+  f.add(label_ebu_hostname, ebu_hostname)
+
+  (0..2).each_with_index do |ix, _|
     f.add(labels[ix], names[ix], labels_sep[ix], values[ix])
   end
   unless cmdline("fdi.pxfactname1")
@@ -40,7 +60,10 @@ def screen_facts mac, proxy_url, proxy_type
   end
   answer = f.run
   if answer == b_confirm
-    (0..8).each_with_index do |ix, _|
+    custom_facts['ebu_environment'] = ebu_environment.get if ebu_environment.get
+    custom_facts['ebu_rhel_version'] = ebu_rhel_version.get if ebu_rhel_version.get
+    custom_facts['ebu_hostname'] = ebu_hostname.get if ebu_hostname.get
+    (0..2).each_with_index do |ix, _|
       custom_facts[names[ix].get] = values[ix].get if names[ix].get && values[ix].get
     end
     if perform_upload(proxy_url, proxy_type, custom_facts)

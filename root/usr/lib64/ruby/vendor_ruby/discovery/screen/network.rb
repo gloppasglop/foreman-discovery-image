@@ -1,5 +1,5 @@
 def screen_network mac, ip, gw, dns, domain
-  Newt::Screen.centered_window(49, 20, "Network configuration")
+  Newt::Screen.centered_window(49, 25, "Network configuration")
   f = Newt::Form.new
   t_desc = Newt::Textbox.new(2, 2, 44, 6, Newt::FLAG_WRAP)
   t_desc.set_text "Provide network configuration for the selected primary interface. " +
