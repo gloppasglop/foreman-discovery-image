@@ -56,7 +56,7 @@ def screen_primary_iface dhcp = false
        cmdline('fdi.pxip') || detect_ip,
        cmdline('fdi.pxgw') || detect_gw,
        cmdline('fdi.pxdns') || detect_dns,
-       cmdline('fdi.pxdomain') || detect_domain]
+       cmdline('fdi.pxdomain') || detect_domain]
     end
   elsif answer == b_cancel
     :screen_welcome

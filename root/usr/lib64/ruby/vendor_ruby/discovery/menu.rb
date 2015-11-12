@@ -95,7 +95,7 @@ rescue => e
 end
 
 def new_custom_facts mac
-  ip_cidr, gw, dns = detect_ipv4_credentials('primary')
+  ip_cidr, gw, dns , domain= detect_ipv4_credentials('primary')
   ip = ip_cidr.split('/').first
   mask = IPAddr.new(ip_cidr).inspect.scan(/\d+.\d+.\d+.\d+\/\d+.\d+.\d+.\d+/).first.split('/').last
   {
